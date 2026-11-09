@@ -45,8 +45,8 @@ class Passage(models.Model):
     def __str__(self):
         return f"{self.track.name}: {self.text[:40]}..."
 
-    ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no confusing 0/O, 1/I
 
+ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no confusing 0/O, 1/I
 
 def generate_room_code():
     while True:
