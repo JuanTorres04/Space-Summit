@@ -64,3 +64,7 @@ class LeaderboardEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = RaceParticipant
         fields = ("username", "track_name", "wpm", "accuracy", "finished_at")
+
+class SubmitResultSerializer(serializers.Serializer):
+    typed = serializers.CharField(max_length=5000)
+    elapsed_seconds = serializers.FloatField(min_value=0.1)

@@ -1,4 +1,7 @@
 from django.db import transaction
+from django.utils import timezone
+from accounts.models import Profile
+from .scoring import SuspiciousSubmission, score_submission
 from django.db.models import Count, Prefetch
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, permissions, viewsets
@@ -15,6 +18,7 @@ from .serializers import (
     PassageSerializer,
     RaceSerializer,
     TrackSerializer,
+    SubmitResultSerializer,
 )
 
 
@@ -98,6 +102,58 @@ class RaceViewSet(
         race = self.get_queryset().get(pk=race.pk)
         return Response(self.get_serializer(race).data)
 
+    @action(detail=True, methods=["post"])
+    def submit(self, request, pk=None):
+        serializer = SubmitResultSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # All-or-nothing: score, participant row, profile stats, and race status
+        with transaction.atomic():
+            race = get_object_or_404(
+                Race.objects.select_for_update().select_related("passage"), pk=pk
+            )
+            participant = get_object_or_404(
+                RaceParticipant.objects.select_for_update(), race=race, user=request.user
+            )
+            if participant.finished_at:
+                raise ValidationError({"detail": "You already submitted a result for this race."})
+
+            try:
+                scores = score_submission(
+                    serializer.validated_data["typed"],
+                    race.passage.text,
+                    serializer.validated_data["elapsed_seconds"],
+                )
+            except SuspiciousSubmission as exc:
+                raise ValidationError({"detail": str(exc)})
+
+            now = timezone.now()
+            participant.wpm = scores["wpm"]
+            participant.accuracy = scores["accuracy"]
+            participant.finish_position = (
+                race.participants.filter(finished_at__isnull=False).count() + 1
+            )
+            participant.finished_at = now
+            participant.save()
+
+            profile = Profile.objects.select_for_update().get(user=request.user)
+            n = profile.races_completed
+            profile.avg_accuracy = round(
+                (profile.avg_accuracy * n + scores["accuracy"]) / (n + 1), 1
+            )
+            profile.best_wpm = max(profile.best_wpm, scores["wpm"])
+            profile.races_completed = n + 1
+            profile.save()
+
+            if not race.participants.filter(finished_at__isnull=True).exists():
+                race.status = Race.Status.FINISHED
+                race.finished_at = now
+                race.save()
+
+        return Response(
+            {**scores, "finish_position": participant.finish_position},
+            status=200,
+        )
 
 class LeaderboardView(ListAPIView):
     serializer_class = LeaderboardEntrySerializer
