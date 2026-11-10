@@ -1,7 +1,11 @@
 import secrets
 
 from django.conf import settings
-from django.core.validators import MaxValueValidator, MinLengthValidator, MinValueValidator
+from django.core.validators import (
+    MaxValueValidator,
+    MinLengthValidator,
+    MinValueValidator,
+)
 from django.db import models
 
 
@@ -48,6 +52,7 @@ class Passage(models.Model):
 
 ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no confusing 0/O, 1/I
 
+
 def generate_room_code():
     while True:
         code = "".join(secrets.choice(ROOM_CODE_ALPHABET) for _ in range(6))
@@ -87,7 +92,9 @@ class Race(models.Model):
 
 
 class RaceParticipant(models.Model):
-    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name="participants")
+    race = models.ForeignKey(
+        Race, on_delete=models.CASCADE, related_name="participants"
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="race_entries"
     )

@@ -16,7 +16,9 @@ class Profile(models.Model):
         related_name="profile",
     )
     display_name = models.CharField(max_length=30, blank=True)
-    avatar = models.CharField(max_length=20, choices=AVATAR_CHOICES, default="astronaut")
+    avatar = models.CharField(
+        max_length=20, choices=AVATAR_CHOICES, default="astronaut"
+    )
     best_wpm = models.FloatField(default=0)
     avg_accuracy = models.FloatField(default=0, validators=[MaxValueValidator(100)])
     races_completed = models.PositiveIntegerField(default=0)

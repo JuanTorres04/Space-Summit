@@ -9,38 +9,94 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='PassageTag',
+            name="PassageTag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Track',
+            name="Track",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=80, unique=True)),
-                ('description', models.TextField(blank=True)),
-                ('elevation_m', models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1)])),
-                ('difficulty', models.CharField(choices=[('easy', 'Easy'), ('moderate', 'Moderate'), ('hard', 'Hard')], default='easy', max_length=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=80, unique=True)),
+                ("description", models.TextField(blank=True)),
+                (
+                    "elevation_m",
+                    models.PositiveIntegerField(
+                        validators=[django.core.validators.MinValueValidator(1)]
+                    ),
+                ),
+                (
+                    "difficulty",
+                    models.CharField(
+                        choices=[
+                            ("easy", "Easy"),
+                            ("moderate", "Moderate"),
+                            ("hard", "Hard"),
+                        ],
+                        default="easy",
+                        max_length=10,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Passage',
+            name="Passage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(validators=[django.core.validators.MinLengthValidator(50)])),
-                ('source', models.CharField(blank=True, max_length=120)),
-                ('word_count', models.PositiveIntegerField(default=0, editable=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('tags', models.ManyToManyField(blank=True, related_name='passages', to='races.passagetag')),
-                ('track', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='passages', to='races.track')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "text",
+                    models.TextField(
+                        validators=[django.core.validators.MinLengthValidator(50)]
+                    ),
+                ),
+                ("source", models.CharField(blank=True, max_length=120)),
+                ("word_count", models.PositiveIntegerField(default=0, editable=False)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "tags",
+                    models.ManyToManyField(
+                        blank=True, related_name="passages", to="races.passagetag"
+                    ),
+                ),
+                (
+                    "track",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="passages",
+                        to="races.track",
+                    ),
+                ),
             ],
         ),
     ]

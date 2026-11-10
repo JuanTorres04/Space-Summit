@@ -89,7 +89,9 @@ class RaceViewSet(
 
     def perform_destroy(self, instance):
         if instance.status != Race.Status.WAITING:
-            raise ValidationError({"detail": "Only races that haven't started can be cancelled."})
+            raise ValidationError(
+                {"detail": "Only races that haven't started can be cancelled."}
+            )
         instance.delete()
 
     @action(detail=False, methods=["post"])
@@ -113,10 +115,14 @@ class RaceViewSet(
                 Race.objects.select_for_update().select_related("passage"), pk=pk
             )
             participant = get_object_or_404(
-                RaceParticipant.objects.select_for_update(), race=race, user=request.user
+                RaceParticipant.objects.select_for_update(),
+                race=race,
+                user=request.user,
             )
             if participant.finished_at:
-                raise ValidationError({"detail": "You already submitted a result for this race."})
+                raise ValidationError(
+                    {"detail": "You already submitted a result for this race."}
+                )
 
             try:
                 scores = score_submission(
@@ -154,6 +160,7 @@ class RaceViewSet(
             {**scores, "finish_position": participant.finish_position},
             status=200,
         )
+
 
 class LeaderboardView(ListAPIView):
     serializer_class = LeaderboardEntrySerializer

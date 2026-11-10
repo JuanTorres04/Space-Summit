@@ -9,42 +9,128 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('races', '0001_initial'),
+        ("races", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Race',
+            name="Race",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('room_code', models.CharField(editable=False, max_length=6, unique=True)),
-                ('status', models.CharField(choices=[('waiting', 'Waiting'), ('in_progress', 'In progress'), ('finished', 'Finished')], default='waiting', max_length=12)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('started_at', models.DateTimeField(blank=True, null=True)),
-                ('finished_at', models.DateTimeField(blank=True, null=True)),
-                ('host', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='hosted_races', to=settings.AUTH_USER_MODEL)),
-                ('passage', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='races', to='races.passage')),
-                ('track', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='races', to='races.track')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "room_code",
+                    models.CharField(editable=False, max_length=6, unique=True),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("waiting", "Waiting"),
+                            ("in_progress", "In progress"),
+                            ("finished", "Finished"),
+                        ],
+                        default="waiting",
+                        max_length=12,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("started_at", models.DateTimeField(blank=True, null=True)),
+                ("finished_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "host",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="hosted_races",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "passage",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="races",
+                        to="races.passage",
+                    ),
+                ),
+                (
+                    "track",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="races",
+                        to="races.track",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='RaceParticipant',
+            name="RaceParticipant",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('wpm', models.FloatField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0)])),
-                ('accuracy', models.FloatField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(100)])),
-                ('finish_position', models.PositiveIntegerField(blank=True, null=True)),
-                ('finished_at', models.DateTimeField(blank=True, null=True)),
-                ('joined_at', models.DateTimeField(auto_now_add=True)),
-                ('race', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participants', to='races.race')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='race_entries', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "wpm",
+                    models.FloatField(
+                        blank=True,
+                        null=True,
+                        validators=[django.core.validators.MinValueValidator(0)],
+                    ),
+                ),
+                (
+                    "accuracy",
+                    models.FloatField(
+                        blank=True,
+                        null=True,
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(100),
+                        ],
+                    ),
+                ),
+                ("finish_position", models.PositiveIntegerField(blank=True, null=True)),
+                ("finished_at", models.DateTimeField(blank=True, null=True)),
+                ("joined_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "race",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="participants",
+                        to="races.race",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="race_entries",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'constraints': [models.UniqueConstraint(fields=('race', 'user'), name='unique_user_per_race')],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("race", "user"), name="unique_user_per_race"
+                    )
+                ],
             },
         ),
     ]

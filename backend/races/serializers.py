@@ -9,7 +9,12 @@ class TrackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Track
         fields = (
-            "id", "name", "description", "elevation_m", "difficulty", "passage_count",
+            "id",
+            "name",
+            "description",
+            "elevation_m",
+            "difficulty",
+            "passage_count",
         )
 
 
@@ -44,8 +49,17 @@ class RaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Race
         fields = (
-            "id", "room_code", "host_username", "track", "track_name", "passage",
-            "status", "participants", "created_at", "started_at", "finished_at",
+            "id",
+            "room_code",
+            "host_username",
+            "track",
+            "track_name",
+            "passage",
+            "status",
+            "participants",
+            "created_at",
+            "started_at",
+            "finished_at",
         )
         read_only_fields = ("room_code", "status", "started_at", "finished_at")
 
@@ -64,6 +78,7 @@ class LeaderboardEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = RaceParticipant
         fields = ("username", "track_name", "wpm", "accuracy", "finished_at")
+
 
 class SubmitResultSerializer(serializers.Serializer):
     typed = serializers.CharField(max_length=5000)
