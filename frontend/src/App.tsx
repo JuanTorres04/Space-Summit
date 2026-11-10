@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthPage } from "./pages/AuthPage";
 import { HomePage } from "./pages/HomePage";
+import { RacePage } from "./pages/RacePage";
 import { useAuthStore } from "./store/authStore";
 
 function RequireAuth({ children }: { children: ReactElement }) {
@@ -35,6 +36,14 @@ export default function App() {
           element={
             <RequireAuth>
               <HomePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/race/:raceId"
+          element={
+            <RequireAuth>
+              <RacePage />
             </RequireAuth>
           }
         />
