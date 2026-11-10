@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../api/client";
 import { createRace, fetchPassagesForTrack, fetchTracks } from "../api/races";
 import { TrackCard } from "../components/TrackCard";
 import { useAuthStore } from "../store/authStore";
 import type { Track } from "../types";
+import { Link, useNavigate } from "react-router-dom";
 
 export function HomePage() {
   const profile = useAuthStore((state) => state.profile);
@@ -56,8 +56,10 @@ export function HomePage() {
     <div className="page wide">
       <header className="top-bar">
         <h1>Summit Sprint</h1>
-        <p className="tagline">Mission Control - Choose a Path and Begin Your Ascent</p>
-        <button onClick={signOut}>Log out</button>
+        <nav>
+          <Link to="/leaderboard">Leaderboard</Link>{" "}
+          <button onClick={signOut}>Log out</button>
+        </nav>
       </header>
 
       {profile && (

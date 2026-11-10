@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 import type { ApiErrorBody, TokenPair } from "../types";
+import { useToastStore } from "../store/toastStore";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -38,9 +39,12 @@ let refreshPromise: Promise<string> | null = null;
 async function refreshAccessToken(): Promise<string> {
   const refresh = tokenStore.getRefresh();
   if (!refresh) throw new Error("No refresh token");
-  const { data } = await axios.post<{ access: string }>(`${API_URL}/auth/refresh/`, {
-    refresh,
-  });
+  const { data } = await axios.post<{ access: string }>(
+    `${API_URL}/auth/refresh/`,
+    {
+      refresh,
+    },
+  );
   tokenStore.setAccess(data.access);
   return data.access;
 }
@@ -72,6 +76,15 @@ api.interceptors.response.use(
         window.dispatchEvent(new Event("auth:logout"));
       }
     }
+    const status = error.response?.status;
+    if (
+      !error.response ||
+      status === 403 ||
+      status === 404 ||
+      (status !== undefined && status >= 500)
+    ) {
+      useToastStore.getState().push(getErrorMessage(error));
+    }
     return Promise.reject(error);
   },
 );
@@ -79,7 +92,8 @@ api.interceptors.response.use(
 /** Turns any API failure into one readable message for the UI. */
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
-    if (!error.response) return "Cannot reach the server. Is the backend running?";
+    if (!error.response)
+      return "Cannot reach the server. Is the backend running?";
     const data = error.response.data;
     if (data) {
       if (typeof data.detail === "string") return data.detail;

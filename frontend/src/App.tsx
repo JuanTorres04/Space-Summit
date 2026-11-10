@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import type { ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { Toaster } from "./components/Toaster";
 import { AuthPage } from "./pages/AuthPage";
 import { HomePage } from "./pages/HomePage";
+import { LeaderboardPage } from "./pages/LeaderboardPage";
 import { RacePage } from "./pages/RacePage";
 import { useAuthStore } from "./store/authStore";
 
@@ -28,27 +31,38 @@ export default function App() {
   }, [signOut]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<AuthPage />} />
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <HomePage />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/race/:raceId"
-          element={
-            <RequireAuth>
-              <RacePage />
-            </RequireAuth>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<AuthPage />} />
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <HomePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/race/:raceId"
+            element={
+              <RequireAuth>
+                <RacePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leaderboard"
+            element={
+              <RequireAuth>
+                <LeaderboardPage />
+              </RequireAuth>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <Toaster />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
