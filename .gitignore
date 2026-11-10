@@ -6,6 +6,7 @@ db.sqlite3
 
 # Environment variables
 .env
+.env.example
 
 # Node
 node_modules/

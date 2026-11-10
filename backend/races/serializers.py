@@ -20,7 +20,9 @@ class TrackSerializer(serializers.ModelSerializer):
 
 class PassageSerializer(serializers.ModelSerializer):
     track_name = serializers.CharField(source="track.name", read_only=True)
-    track_elevation_m = serializers.IntegerField(source="track.elevation_m", read_only=True)
+    track_elevation_m = serializers.IntegerField(
+        source="track.elevation_m", read_only=True
+    )
     tags = serializers.SlugRelatedField(
         many=True,
         slug_field="name",
@@ -31,8 +33,14 @@ class PassageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Passage
         fields = (
-            "id", "track", "track_name", "track_elevation_m",
-            "text", "source", "word_count", "tags",
+            "id",
+            "track",
+            "track_name",
+            "track_elevation_m",
+            "text",
+            "source",
+            "word_count",
+            "tags",
         )
         read_only_fields = ("word_count",)
 
