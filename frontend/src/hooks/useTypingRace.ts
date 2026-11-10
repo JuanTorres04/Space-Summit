@@ -18,7 +18,7 @@ export function useTypingRace(target: string): TypingRace {
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const [now, setNow] = useState<number>(() => performance.now());
 
-  // Tick while the race is running so live WPM updates
+  // while the race is running so live WPM updates
   useEffect(() => {
     if (startedAt === null || finishedAt !== null) return;
     const id = window.setInterval(() => setNow(performance.now()), 200);

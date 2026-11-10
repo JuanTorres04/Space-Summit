@@ -24,7 +24,6 @@ export default function App() {
     void restore();
   }, [restore]);
 
-  // The API client fires this event when a token refresh fails
   useEffect(() => {
     window.addEventListener("auth:logout", signOut);
     return () => window.removeEventListener("auth:logout", signOut);

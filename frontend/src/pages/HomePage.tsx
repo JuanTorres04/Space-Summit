@@ -42,7 +42,13 @@ export function HomePage() {
         setError("This track has no passages yet.");
         return;
       }
-      const passage = passages[Math.floor(Math.random() * passages.length)];
+      const lastId = Number(sessionStorage.getItem("lastPassageId"));
+      const pool =
+        passages.length > 1
+          ? passages.filter((p) => p.id !== lastId)
+          : passages;
+      const passage = pool[Math.floor(Math.random() * pool.length)];
+      sessionStorage.setItem("lastPassageId", String(passage.id));
       const race = await createRace(track.id, passage.id);
       navigate(`/race/${race.id}`);
     } catch (err) {

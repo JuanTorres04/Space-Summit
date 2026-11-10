@@ -31,7 +31,7 @@ class TrackViewSet(viewsets.ModelViewSet):
     ordering = ["elevation_m"]
 
     def get_queryset(self):
-        # annotate() counts passages in the same query, so no per-track extra queries
+        # counts passages in the same query so no per track causes extra queries
         qs = Track.objects.annotate(passage_count=Count("passages"))
         difficulty = self.request.query_params.get("difficulty")
         if difficulty:
@@ -47,7 +47,7 @@ class PassageViewSet(viewsets.ModelViewSet):
     ordering_fields = ["word_count", "created_at"]
 
     def get_queryset(self):
-        # select_related joins the track, prefetch_related loads all tags in one query
+        # joins the track and then loads all tags in one query
         qs = Passage.objects.select_related("track").prefetch_related("tags")
         track = self.request.query_params.get("track")
         tag = self.request.query_params.get("tag")
@@ -82,7 +82,7 @@ class RaceViewSet(
         return super().get_permissions()
 
     def perform_create(self, serializer):
-        # Create the race and the host's participant row together, or not at all
+        # create the race and the hosts participant row together or not at all
         with transaction.atomic():
             race = serializer.save(host=self.request.user)
             RaceParticipant.objects.create(race=race, user=self.request.user)
@@ -109,7 +109,7 @@ class RaceViewSet(
         serializer = SubmitResultSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # All-or-nothing: score, participant row, profile stats, and race status
+        # score, participant row, profile stats, and race status
         with transaction.atomic():
             race = get_object_or_404(
                 Race.objects.select_for_update().select_related("passage"), pk=pk

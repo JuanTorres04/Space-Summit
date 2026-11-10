@@ -25,6 +25,7 @@ export interface Passage {
   source: string;
   word_count: number;
   tags: string[];
+  track_elevation_m: number;
 }
 
 export interface RaceParticipant {

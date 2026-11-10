@@ -1,5 +1,5 @@
 MAX_HUMAN_WPM = 250  # faster than this is treated as cheating
-CHARS_PER_WORD = 5  # the standard definition of a "word" for WPM
+CHARS_PER_WORD = 5
 
 
 class SuspiciousSubmission(ValueError):

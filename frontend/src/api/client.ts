@@ -21,7 +21,7 @@ export const tokenStore = {
 
 export const api = axios.create({ baseURL: API_URL });
 
-// Attach the access token to every request
+// attach the access token to every request
 api.interceptors.request.use((config) => {
   const token = tokenStore.getAccess();
   if (token) {
@@ -49,7 +49,7 @@ async function refreshAccessToken(): Promise<string> {
   return data.access;
 }
 
-// On a 401, refresh the token once and retry the original request
+// with a 401 refresh the token once and retry the original request
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -89,7 +89,7 @@ api.interceptors.response.use(
   },
 );
 
-/** Turns any API failure into one readable message for the UI. */
+/** this turns any API failure into one readable message for the UI */
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
     if (!error.response)

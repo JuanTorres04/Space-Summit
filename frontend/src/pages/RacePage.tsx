@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getErrorMessage } from "../api/client";
 import { fetchPassage, fetchRace, submitResult } from "../api/races";
-import { ProgressBar } from "../components/ProgressBar";
+import { TrailCanvas } from "../components/TrailCanvas";
 import { TypingBox } from "../components/TypingBox";
 import { useTypingRace } from "../hooks/useTypingRace";
 import type { Passage, SubmitResultResponse } from "../types";
@@ -19,7 +19,7 @@ function Round({ raceId, passage }: RoundProps) {
   const submitted = useRef(false);
   const { finished, typed, elapsedSeconds } = race;
 
-  // Submit once when the passage is complete
+  // submits once when the passage is complete
   useEffect(() => {
     if (!finished || submitted.current) return;
     submitted.current = true;
@@ -32,9 +32,12 @@ function Round({ raceId, passage }: RoundProps) {
   }, [finished, raceId, typed, elapsedSeconds]);
 
   return (
-    <>
+    <div className={race.finished ? "round is-finished" : "round"}>
       <h1>{passage.track_name}</h1>
-      <ProgressBar value={race.progress} label="Climb progress" />
+      <TrailCanvas
+        progress={race.progress}
+        elevationM={passage.track_elevation_m}
+      />
       <p className="stats">
         {Math.round(race.wpm)} WPM · {Math.round(race.accuracy)}% accuracy
       </p>
@@ -54,14 +57,14 @@ function Round({ raceId, passage }: RoundProps) {
       )}
       {result && (
         <section className="result">
-          <h2>Summit reached!</h2>
+          <h2>Event Horizon Crossed!</h2>
           <p>
             {result.wpm} WPM · {result.accuracy}% accuracy
           </p>
           <Link to="/">Back to tracks</Link>
         </section>
       )}
-    </>
+    </div>
   );
 }
 
