@@ -34,11 +34,11 @@ interface Nebula {
 }
 
 const WORLD_LENGTH = 600;
-const DEPTH_SCALE = 6; 
-const PLAYER_P = 0.82; 
+const DEPTH_SCALE = 6;
+const PLAYER_P = 0.82;
 const MIN_P = 0.03;
-const EASING = 0.07; 
-const ROW_STEP = 3; 
+const EASING = 0.07;
+const ROW_STEP = 3;
 const STAR_COUNT = 140;
 const SPEED_LINES = 34;
 const DUST_COUNT = 70;
@@ -296,10 +296,10 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
     };
 
     const panel = (x: number, y: number, w: number, h: number) => {
-      ctx.fillStyle = "rgba(10, 25, 50, 0.35)";
-      ctx.strokeStyle = "rgba(94, 242, 255, 0.4)";
+      ctx.fillStyle = "rgba(8, 6, 4, 0.55)";
+      ctx.strokeStyle = "rgba(255, 170, 90, 0.4)";
       ctx.lineWidth = 1;
-      rrect(x, y, w, h, 8);
+      rrect(x, y, w, h, 2);
       ctx.fill();
       ctx.stroke();
     };
@@ -420,7 +420,7 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
         }
       }
 
-      // created a shooting star 
+      // created a shooting star
       if (!reduceMotion) {
         for (let i = 0; i < 3; i++) {
           const ph = (time / 5200 + hash(i * 13)) % 1;
@@ -789,8 +789,8 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
 
       // Helmet frame with the visor cut out
       const frameGrad = ctx.createLinearGradient(0, 0, 0, height);
-      frameGrad.addColorStop(0, "#161c3c");
-      frameGrad.addColorStop(1, "#05060e");
+      frameGrad.addColorStop(0, "#1a120d");
+      frameGrad.addColorStop(1, "#050302");
       ctx.fillStyle = frameGrad;
       ctx.beginPath();
       ctx.rect(-30, -30, width + 60, height + 60);
@@ -896,10 +896,10 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
       ctx.beginPath();
       addWindow();
       ctx.lineWidth = 8;
-      ctx.strokeStyle = "#232b57";
+      ctx.strokeStyle = "#3a2415";
       ctx.stroke();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgba(180, 200, 255, 0.35)";
+      ctx.strokeStyle = "rgba(255, 190, 120, 0.3)";
       ctx.stroke();
       if (pullS > 0.02) {
         ctx.shadowColor = "#ff9a3c";
@@ -914,7 +914,7 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
       for (let i = 0; i < 12; i++) {
         const rx = lerp(mx + wr, mx + ww - wr, i / 11);
         for (const ry of [my * 0.5, height - mb * 0.2]) {
-          ctx.fillStyle = "#3a4478";
+          ctx.fillStyle = "#5a3a22";
           ctx.strokeStyle = "#05060f";
           ctx.lineWidth = 1.5;
           ctx.beginPath();
@@ -931,7 +931,7 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
       rrect(vpX - width * 0.12, height - mb * 0.62, width * 0.24, mb * 0.22, 6);
       ctx.fill();
       ctx.stroke();
-      ["#5ef2ff", "#ffb347", "#7be0a0"].forEach((color, i) => {
+      ["#ffd08a", "#ff9a3c", "#c4501b"].forEach((color, i) => {
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(mx + 34 + i * 20, height - mb * 0.5, 4, 0, Math.PI * 2);
@@ -940,26 +940,26 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
 
       // hud inside the visor
       ctx.textAlign = "left";
-      ctx.font = "13px ui-monospace, monospace";
+      ctx.font = "13px 'IBM Plex Mono', monospace";
       const hx = mx + 26;
       const hy = my + 24;
       panel(hx, hy, 190, 72);
       const o2 = Math.round(100 - 38 * t);
-      ctx.fillStyle = "#5ef2ff";
+      ctx.fillStyle = "#ffd08a";
       ctx.fillText(`O2 ${o2}%`, hx + 12, hy + 22);
-      ctx.fillStyle = "rgba(94, 242, 255, 0.2)";
-      ctx.fillRect(hx + 12, hy + 30, 166, 8);
-      ctx.fillStyle = o2 > 70 ? "#5ef2ff" : "#ffb347";
-      ctx.fillRect(hx + 12, hy + 30, 166 * (o2 / 100), 8);
-      ctx.fillStyle = "#5ef2ff";
+      ctx.fillStyle = "rgba(255, 208, 138, 0.2)";
+      ctx.fillRect(hx + 12, hy + 30, 166, 6);
+      ctx.fillStyle = o2 > 70 ? "#ffd08a" : "#ff9a3c";
+      ctx.fillRect(hx + 12, hy + 30, 166 * (o2 / 100), 6);
+      ctx.fillStyle = "#ffd08a";
       ctx.fillText(`TEMP ${Math.round(-120 - 60 * t)} C`, hx + 12, hy + 58);
 
       const px0 = mx + ww - 26 - 190;
       panel(px0, hy, 190, 72);
       const bpm = Math.round(70 + 75 * speedVis + 4 * Math.sin(time / 1100));
-      ctx.fillStyle = "#7be0a0";
+      ctx.fillStyle = "#ffd08a";
       ctx.fillText(`PULSE ${bpm}`, px0 + 12, hy + 22);
-      ctx.strokeStyle = "#7be0a0";
+      ctx.strokeStyle = "#ff9a3c";
       ctx.lineWidth = 2;
       ctx.beginPath();
       for (let i = 0; i <= 166; i += 3) {
@@ -973,7 +973,7 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
       const bx = vpX - 170;
       const by = height - mb - 56;
       panel(bx, by, 340, 40);
-      ctx.fillStyle = "#5ef2ff";
+      ctx.fillStyle = "#ffd08a";
       ctx.textAlign = "center";
       ctx.fillText(
         c > 5.2
@@ -982,12 +982,12 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
         vpX,
         by + 17,
       );
-      ctx.fillStyle = "rgba(94, 242, 255, 0.2)";
-      ctx.fillRect(bx + 12, by + 26, 316, 5);
-      ctx.fillStyle = "#ffb347";
-      ctx.fillRect(bx + 12, by + 26, 316 * t, 5);
+      ctx.fillStyle = "rgba(255, 208, 138, 0.2)";
+      ctx.fillRect(bx + 12, by + 26, 316, 4);
+      ctx.fillStyle = "#ff9a3c";
+      ctx.fillRect(bx + 12, by + 26, 316 * t, 4);
       ctx.textAlign = "right";
-      ctx.fillStyle = "#5ef2ff";
+      ctx.fillStyle = "#ffd08a";
       ctx.fillText(
         `CRYSTALS ${Math.floor(d / CRYSTAL_SPACING)}`,
         mx + ww - 26,
@@ -999,13 +999,13 @@ export function TrailCanvas({ progress, elevationM }: TrailCanvasProps) {
       if (title > 0.01) {
         ctx.globalAlpha = title;
         ctx.textAlign = "center";
-        ctx.font = "700 28px Orbitron, ui-monospace, monospace";
+        ctx.font = "800 36px 'Big Shoulders Display', sans-serif";
         ctx.fillStyle = "#ffe2b0";
         ctx.shadowColor = "#ff9a3c";
         ctx.shadowBlur = 18;
         ctx.fillText("EVENT HORIZON CROSSED", vpX, height * 0.22);
         ctx.shadowBlur = 0;
-        ctx.font = "14px ui-monospace, monospace";
+        ctx.font = "13px 'IBM Plex Mono', monospace";
         ctx.fillStyle = "#cfe9ff";
         ctx.fillText("WELCOME TO THE OTHER SIDE", vpX, height * 0.22 + 28);
         ctx.globalAlpha = 1;
