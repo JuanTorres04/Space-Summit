@@ -56,6 +56,7 @@ export function HomePage() {
     <div className="page wide">
       <header className="top-bar">
         <h1>Summit Sprint</h1>
+        <p className="tagline">Mission Control - Choose a Path and Begin Your Ascent</p>
         <button onClick={signOut}>Log out</button>
       </header>
 
@@ -71,7 +72,7 @@ export function HomePage() {
           {error}
         </p>
       )}
-      {loading && <p>Loading tracks...</p>}
+      {loading && <p>Scanning for tracks...</p>}
 
       <div className="track-grid">
         {tracks.map((track) => (

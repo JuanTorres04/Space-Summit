@@ -93,7 +93,7 @@ export function RacePage() {
           {error}
         </p>
       )}
-      {!passage && !error && <p>Loading race...</p>}
+      {!passage && !error && <p>Preparing for ascent...</p>}
       {passage && <Round raceId={id} passage={passage} />}
     </div>
   );

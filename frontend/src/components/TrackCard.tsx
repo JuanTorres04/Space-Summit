@@ -16,7 +16,7 @@ export function TrackCard({ track, disabled, onStart }: TrackCardProps) {
         {track.passage_count} passages
       </p>
       <button disabled={disabled} onClick={() => onStart(track)}>
-        Start climb
+        Begin Ascent
       </button>
     </article>
   );
