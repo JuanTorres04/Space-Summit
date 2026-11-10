@@ -29,43 +29,56 @@ export function LeaderboardPage() {
   return (
     <div className="page wide">
       <header className="top-bar">
-        <h1>Leaderboard</h1>
-        <Link to="/">Back to tracks</Link>
+        <div>
+          <h1>Leaderboard</h1>
+          <p className="tagline">Fastest ascents across every trail</p>
+        </div>
+        <nav className="nav">
+          <Link className="nav-link" to="/">
+            Back to tracks
+          </Link>
+        </nav>
       </header>
 
-      {loading && <p>Loading...</p>}
+      {loading && <p className="status-line">Loading...</p>}
       {error && (
         <p className="error" role="alert">
           {error}
         </p>
       )}
       {!loading && !error && entries.length === 0 && (
-        <p>No finished races yet.</p>
+        <div className="board empty">
+          No finished races yet. Be the first to cross the event horizon.
+        </div>
       )}
 
       {entries.length > 0 && (
-        <table className="leaderboard">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Player</th>
-              <th scope="col">Track</th>
-              <th scope="col">WPM</th>
-              <th scope="col">Accuracy</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map((entry, index) => (
-              <tr key={`${entry.username}-${entry.finished_at}`}>
-                <td>{index + 1}</td>
-                <td>{entry.username}</td>
-                <td>{entry.track_name}</td>
-                <td>{entry.wpm}</td>
-                <td>{entry.accuracy}%</td>
+        <div className="board">
+          <table className="leaderboard">
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Pilot</th>
+                <th scope="col">Trail</th>
+                <th scope="col">WPM</th>
+                <th scope="col">Accuracy</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {entries.map((entry, index) => (
+                <tr key={`${entry.username}-${entry.finished_at}`}>
+                  <td>
+                    <span className="rank">{index + 1}</span>
+                  </td>
+                  <td>{entry.username}</td>
+                  <td>{entry.track_name}</td>
+                  <td className="wpm-cell">{entry.wpm}</td>
+                  <td>{entry.accuracy}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

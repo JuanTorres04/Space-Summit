@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../api/client";
 import { createRace, fetchPassagesForTrack, fetchTracks } from "../api/races";
 import { TrackCard } from "../components/TrackCard";
 import { useAuthStore } from "../store/authStore";
 import type { Track } from "../types";
-import { Link, useNavigate } from "react-router-dom";
 
 export function HomePage() {
   const profile = useAuthStore((state) => state.profile);
@@ -61,26 +61,47 @@ export function HomePage() {
   return (
     <div className="page wide">
       <header className="top-bar">
-        <h1>Summit Sprint</h1>
-        <nav>
-          <Link to="/leaderboard">Leaderboard</Link>{" "}
+        <div>
+          <h1>Summit Sprint</h1>
+          <p className="tagline">Mission control · choose a trail and climb</p>
+        </div>
+        <nav className="nav">
+          <Link className="nav-link" to="/leaderboard">
+            Leaderboard
+          </Link>
           <button onClick={signOut}>Log out</button>
         </nav>
       </header>
 
       {profile && (
-        <p>
-          {profile.display_name} · Best WPM: {profile.best_wpm} · Avg accuracy:{" "}
-          {profile.avg_accuracy}% · Races: {profile.races_completed}
-        </p>
+        <section className="stat-strip" aria-label="Pilot stats">
+          <div className="stat-tile">
+            <span className="stat-label">Pilot</span>
+            <span className="stat-value">{profile.display_name}</span>
+          </div>
+          <div className="stat-tile">
+            <span className="stat-label">Best WPM</span>
+            <span className="stat-value">{profile.best_wpm}</span>
+          </div>
+          <div className="stat-tile">
+            <span className="stat-label">Avg accuracy</span>
+            <span className="stat-value">{profile.avg_accuracy}%</span>
+          </div>
+          <div className="stat-tile">
+            <span className="stat-label">Climbs</span>
+            <span className="stat-value">{profile.races_completed}</span>
+          </div>
+        </section>
       )}
+
+      <h2 className="section-title">Choose your ascent</h2>
 
       {error && (
         <p className="error" role="alert">
           {error}
         </p>
       )}
-      {loading && <p>Scanning for tracks...</p>}
+      {loading && <p className="status-line">Scanning for trails...</p>}
 
       <div className="track-grid">
         {tracks.map((track) => (

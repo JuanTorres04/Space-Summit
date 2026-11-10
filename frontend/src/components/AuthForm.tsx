@@ -10,7 +10,13 @@ interface AuthFormProps {
   onToggleMode: () => void;
 }
 
-export function AuthForm({ mode, loading, error, onSubmit, onToggleMode }: AuthFormProps) {
+export function AuthForm({
+  mode,
+  loading,
+  error,
+  onSubmit,
+  onToggleMode,
+}: AuthFormProps) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +28,13 @@ export function AuthForm({ mode, loading, error, onSubmit, onToggleMode }: AuthF
 
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
-      <h1>{mode === "login" ? "Log in" : "Create account"}</h1>
+      <div className="auth-brand">
+        <p className="auth-mark">SUMMIT SPRINT</p>
+        <h1>{mode === "login" ? "Pilot login" : "New pilot registration"}</h1>
+        <p className="auth-sub">
+          Type your way up the mountain. Cross the event horizon.
+        </p>
+      </div>
 
       <label htmlFor="username">Username</label>
       <input
@@ -64,11 +76,17 @@ export function AuthForm({ mode, loading, error, onSubmit, onToggleMode }: AuthF
       )}
 
       <button type="submit" disabled={loading}>
-        {loading ? "Please wait..." : mode === "login" ? "Log in" : "Sign up"}
+        {loading
+          ? "Please wait..."
+          : mode === "login"
+            ? "Launch"
+            : "Join the crew"}
       </button>
 
       <button type="button" className="link-button" onClick={onToggleMode}>
-        {mode === "login" ? "Need an account? Sign up" : "Have an account? Log in"}
+        {mode === "login"
+          ? "Need an account? Sign up"
+          : "Have an account? Log in"}
       </button>
     </form>
   );

@@ -31,7 +31,7 @@ export function AuthPage() {
   };
 
   return (
-    <div className="page">
+    <div className="auth-page">
       <AuthForm
         mode={mode}
         loading={loading}
