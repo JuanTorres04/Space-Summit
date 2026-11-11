@@ -11,6 +11,7 @@ interface AuthState {
   signIn: (credentials: Credentials) => Promise<void>;
   signUp: (payload: RegisterPayload) => Promise<void>;
   restore: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
   signOut: () => void;
 }
 
@@ -43,6 +44,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       tokenStore.clear();
       set({ profile: null, status: "anonymous" });
     }
+  },
+
+  refreshProfile: async () => {
+    const profile = await fetchProfile();
+    set({ profile, status: "authenticated" });
   },
 
   signOut: () => {

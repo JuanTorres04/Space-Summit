@@ -58,7 +58,17 @@ function Round({ raceId, passage, roomCode }: RoundProps) {
       elapsed_seconds: Math.max(elapsedSeconds, 0.1),
       mistakes,
     })
-      .then(setResult)
+      .then((data) => {
+        setResult(data);
+
+        // Refresh the user's homepage stats after the race
+        void useAuthStore
+          .getState()
+          .refreshProfile()
+          .catch((err) => {
+            console.error("Could not refresh profile:", err);
+          });
+      })
       .catch((err: unknown) => setError(getErrorMessage(err)));
   }, [finished, raceId, typed, elapsedSeconds, mistakes]);
 
