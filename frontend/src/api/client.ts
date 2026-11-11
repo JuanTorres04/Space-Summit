@@ -54,7 +54,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const original = error.config as RetryableConfig | undefined;
-    const isLogin = original?.url?.includes("/auth/login/");
+    const isLogin = original?.url?.includes("/api/auth/login/");
 
     if (
       error.response?.status === 401 &&

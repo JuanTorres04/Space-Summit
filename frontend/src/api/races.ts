@@ -46,19 +46,19 @@ export async function submitResult(
   payload: SubmitResultPayload,
 ): Promise<SubmitResultResponse> {
   const { data } = await api.post<SubmitResultResponse>(
-    `/races/${raceId}/submit/`,
+    `/api/races/${raceId}/submit/`,
     payload,
   );
   return data;
 }
 
 export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
-  const { data } = await api.get<Paginated<LeaderboardEntry>>("/leaderboard/");
+  const { data } = await api.get<Paginated<LeaderboardEntry>>("/api/leaderboard/");
   return data.results;
 }
 
 export async function joinRace(roomCode: string): Promise<Race> {
-  const { data } = await api.post<Race>("/races/join/", {
+  const { data } = await api.post<Race>("/api/races/join/", {
     room_code: roomCode,
   });
   return data;
