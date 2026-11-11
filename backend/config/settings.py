@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 import os
+import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -79,7 +81,10 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
+if os.getenv("DATABASE_URL"):
+    DATABASES["default"] = dj_database_url.parse(
+        os.environ["DATABASE_URL"], conn_max_age=0
+    )
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -150,3 +155,9 @@ if REDIS_URL:
     }
 else:
     CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS = [
+    o for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if o
+]
