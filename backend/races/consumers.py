@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from .models import Race, RaceParticipant
 
+
 class RaceConsumer(AsyncJsonWebsocketConsumer):
     """Live lobby and progress sharing for one race room."""
 
