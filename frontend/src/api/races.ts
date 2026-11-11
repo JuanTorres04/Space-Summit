@@ -10,21 +10,21 @@ import type {
 } from "../types";
 
 export async function fetchTracks(): Promise<Track[]> {
-  const { data } = await api.get<Paginated<Track>>("/tracks/");
+  const { data } = await api.get<Paginated<Track>>("/api/tracks/");
   return data.results;
 }
 
 export async function fetchPassagesForTrack(
   trackId: number,
 ): Promise<Passage[]> {
-  const { data } = await api.get<Paginated<Passage>>("/passages/", {
+  const { data } = await api.get<Paginated<Passage>>("/api/passages/", {
     params: { track: trackId },
   });
   return data.results;
 }
 
 export async function fetchPassage(id: number): Promise<Passage> {
-  const { data } = await api.get<Passage>(`/passages/${id}/`);
+  const { data } = await api.get<Passage>(`/api/passages/${id}/`);
   return data;
 }
 
@@ -32,12 +32,12 @@ export async function createRace(
   track: number,
   passage: number,
 ): Promise<Race> {
-  const { data } = await api.post<Race>("/races/", { track, passage });
+  const { data } = await api.post<Race>("/api/races/", { track, passage });
   return data;
 }
 
 export async function fetchRace(id: number): Promise<Race> {
-  const { data } = await api.get<Race>(`/races/${id}/`);
+  const { data } = await api.get<Race>(`/api/races/${id}/`);
   return data;
 }
 
