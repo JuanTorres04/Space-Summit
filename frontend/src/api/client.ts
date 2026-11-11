@@ -40,7 +40,7 @@ async function refreshAccessToken(): Promise<string> {
   const refresh = tokenStore.getRefresh();
   if (!refresh) throw new Error("No refresh token");
   const { data } = await axios.post<{ access: string }>(
-    `${API_URL}/auth/refresh/`,
+    `${API_URL}/api/auth/refresh/`,
     {
       refresh,
     },
