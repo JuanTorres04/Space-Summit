@@ -28,9 +28,8 @@ function Round({ raceId, passage, roomCode }: RoundProps) {
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
   const submitted = useRef(false);
-  const { finished, typed, elapsedSeconds } = race;
+  const { finished, typed, elapsedSeconds, mistakes, correctChars } = race;
   const { started, send } = crew;
-  const typedLength = typed.length;
 
   // 3, 2, 1, GO once the host has started the race
   useEffect(() => {
@@ -45,10 +44,10 @@ function Round({ raceId, passage, roomCode }: RoundProps) {
   const ready = !crewMode || (started && tick >= 3);
   const count = crewMode && started ? 3 - tick : null;
 
-  // share progress with the room as we type
+  // share progress with the room only correct characters count
   useEffect(() => {
-    if (crewMode && ready) send({ type: "progress", position: typedLength });
-  }, [crewMode, ready, send, typedLength]);
+    if (crewMode && ready) send({ type: "progress", position: correctChars });
+  }, [crewMode, ready, send, correctChars]);
 
   // submits once when the passage is complete
   useEffect(() => {
@@ -57,10 +56,11 @@ function Round({ raceId, passage, roomCode }: RoundProps) {
     submitResult(raceId, {
       typed,
       elapsed_seconds: Math.max(elapsedSeconds, 0.1),
+      mistakes,
     })
       .then(setResult)
       .catch((err: unknown) => setError(getErrorMessage(err)));
-  }, [finished, raceId, typed, elapsedSeconds]);
+  }, [finished, raceId, typed, elapsedSeconds, mistakes]);
 
   // everyones results with our own taken from the servers reply
   const standings: Record<string, FinishedResult> = result
@@ -117,6 +117,11 @@ function Round({ raceId, passage, roomCode }: RoundProps) {
         disabled={finished || !ready}
         onChange={race.handleChange}
       />
+      {typed.length > correctChars && !finished && (
+        <p className="status-line">
+          Fix the highlighted mistake to keep climbing
+        </p>
+      )}
 
       {finished && !result && !error && <p>Submitting your result...</p>}
       {error && (

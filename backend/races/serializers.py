@@ -93,5 +93,8 @@ class LeaderboardEntrySerializer(serializers.ModelSerializer):
 
 
 class SubmitResultSerializer(serializers.Serializer):
-    typed = serializers.CharField(max_length=5000)
+    typed = serializers.CharField(max_length=5000, trim_whitespace=False)
     elapsed_seconds = serializers.FloatField(min_value=0.1)
+    mistakes = serializers.IntegerField(
+        min_value=0, max_value=2000, required=False, default=0
+    )

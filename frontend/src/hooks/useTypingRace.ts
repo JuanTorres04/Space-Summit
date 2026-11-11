@@ -9,16 +9,27 @@ export interface TypingRace {
   wpm: number;
   accuracy: number;
   progress: number;
+  correctChars: number;
+  mistakes: number;
   handleChange: (value: string) => void;
+}
+
+/** how many characters at the start of typed match the target */
+function correctPrefix(typed: string, target: string): number {
+  let i = 0;
+  while (i < typed.length && i < target.length && typed[i] === target[i]) i++;
+  return i;
 }
 
 export function useTypingRace(target: string): TypingRace {
   const [typed, setTyped] = useState("");
+  const [mistakes, setMistakes] = useState(0);
+  const [keystrokes, setKeystrokes] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const [now, setNow] = useState<number>(() => performance.now());
 
-  // while the race is running so live WPM updates
+  // tick while the race is running so live WPM updates
   useEffect(() => {
     if (startedAt === null || finishedAt !== null) return;
     const id = window.setInterval(() => setNow(performance.now()), 200);
@@ -28,33 +39,46 @@ export function useTypingRace(target: string): TypingRace {
   const handleChange = useCallback(
     (value: string) => {
       if (finishedAt !== null) return;
-      const next = value.slice(0, target.length);
       const t = performance.now();
-      if (startedAt === null && next.length > 0) {
-        setStartedAt(t);
-        setNow(t);
+      let next = value.slice(0, target.length);
+
+      if (next.length > typed.length) {
+        // you can't go more than one character past a mistake
+        next = next.slice(0, correctPrefix(next, target) + 1);
+        if (next.length <= typed.length) return;
+
+        setKeystrokes((k) => k + (next.length - typed.length));
+        if (next[next.length - 1] !== target[next.length - 1]) {
+          setMistakes((m) => m + 1);
+        }
+        if (startedAt === null) {
+          setStartedAt(t);
+          setNow(t);
+        }
       }
+
       setTyped(next);
-      if (next.length === target.length) setFinishedAt(t);
+      // only an exact match finishes the race
+      if (next === target) setFinishedAt(t);
     },
-    [finishedAt, startedAt, target.length],
+    [finishedAt, startedAt, target, typed],
   );
 
-  const correct = useMemo(() => {
-    let count = 0;
-    for (let i = 0; i < typed.length; i++) {
-      if (typed[i] === target[i]) count++;
-    }
-    return count;
-  }, [typed, target]);
+  const correctChars = useMemo(
+    () => correctPrefix(typed, target),
+    [typed, target],
+  );
 
   const endTime = finishedAt ?? now;
   const elapsedSeconds =
     startedAt === null ? 0 : Math.max((endTime - startedAt) / 1000, 0);
   const wpm =
-    elapsedSeconds > 0 ? correct / CHARS_PER_WORD / (elapsedSeconds / 60) : 0;
-  const accuracy = typed.length > 0 ? (correct / typed.length) * 100 : 100;
-  const progress = target.length > 0 ? (typed.length / target.length) * 100 : 0;
+    elapsedSeconds > 0
+      ? correctChars / CHARS_PER_WORD / (elapsedSeconds / 60)
+      : 0;
+  const accuracy =
+    keystrokes > 0 ? ((keystrokes - mistakes) / keystrokes) * 100 : 100;
+  const progress = target.length > 0 ? (correctChars / target.length) * 100 : 0;
 
   return {
     typed,
@@ -63,6 +87,8 @@ export function useTypingRace(target: string): TypingRace {
     wpm,
     accuracy,
     progress,
+    correctChars,
+    mistakes,
     handleChange,
   };
 }

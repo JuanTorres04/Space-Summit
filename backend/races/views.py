@@ -138,6 +138,7 @@ class RaceViewSet(
                     serializer.validated_data["typed"],
                     race.passage.text,
                     serializer.validated_data["elapsed_seconds"],
+                    serializer.validated_data.get("mistakes"),
                 )
             except SuspiciousSubmission as exc:
                 raise ValidationError({"detail": str(exc)})

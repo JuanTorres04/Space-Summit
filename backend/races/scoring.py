@@ -26,12 +26,18 @@ def calculate_wpm(typed: str, target: str, elapsed_seconds: float) -> float:
     return (correct / CHARS_PER_WORD) / minutes
 
 
-def score_submission(typed: str, target: str, elapsed_seconds: float) -> dict:
-    """Score a finished race, rejecting results that are humanly impossible."""
+def score_submission(
+    typed: str, target: str, elapsed_seconds: float, mistakes: int = 0
+) -> dict:
+    """Score a finished race.
+
+    The passage must be typed exactly and the speed must be humanly possible.
+    `mistakes` counts wrong keystrokes the player corrected along the way.
+    """
+    if typed != target:
+        raise SuspiciousSubmission("The passage was not typed correctly.")
     wpm = calculate_wpm(typed, target, elapsed_seconds)
     if wpm > MAX_HUMAN_WPM:
         raise SuspiciousSubmission(f"{wpm:.0f} WPM is above the allowed limit.")
-    return {
-        "wpm": round(wpm, 1),
-        "accuracy": round(calculate_accuracy(typed, target), 1),
-    }
+    accuracy = len(target) / (len(target) + mistakes) * 100
+    return {"wpm": round(wpm, 1), "accuracy": round(accuracy, 1)}

@@ -42,3 +42,12 @@ class ScoringTests(SimpleTestCase):
     def test_valid_submission_returns_rounded_scores(self):
         result = score_submission(TARGET, TARGET, 60)
         self.assertEqual(result, {"wpm": 10.0, "accuracy": 100.0})
+
+    def test_wrong_text_is_rejected(self):
+        with self.assertRaises(SuspiciousSubmission):
+            score_submission("b" * 50, TARGET, 60)
+
+    def test_mistakes_lower_accuracy(self):
+        # 50 correct characters plus 10 corrected wrong keystrokes
+        result = score_submission(TARGET, TARGET, 60, mistakes=10)
+        self.assertAlmostEqual(result["accuracy"], 83.3, places=1)

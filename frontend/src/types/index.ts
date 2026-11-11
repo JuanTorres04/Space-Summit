@@ -76,6 +76,7 @@ export interface RegisterPayload extends Credentials {
 export interface SubmitResultPayload {
   typed: string;
   elapsed_seconds: number;
+  mistakes: number;
 }
 
 export interface SubmitResultResponse {
