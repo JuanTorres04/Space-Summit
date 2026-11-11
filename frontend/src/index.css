@@ -674,3 +674,220 @@ a:focus-visible {
     animation: none;
   }
 }
+
+/* ---------- crew race ---------- */
+.crew-title {
+  margin-top: 2.25rem;
+}
+.crew-section {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  padding: 1.25rem 1.4rem;
+}
+.crew-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.crew-block select,
+.crew-block input {
+  padding: 0.7rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--cream);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+}
+.crew-block input {
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.crew-block select:focus,
+.crew-block input:focus {
+  outline: none;
+  border-color: var(--amber);
+}
+
+.lobby {
+  display: grid;
+  gap: 1rem;
+}
+.room-code {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 4.5rem;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  color: var(--gold);
+  text-shadow: 0 0 24px rgba(255, 154, 60, 0.45);
+}
+.crew-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.crew-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(255, 170, 90, 0.1);
+}
+.crew-list li:last-child {
+  border-bottom: 0;
+}
+.crew-list .badge {
+  margin: 0;
+  color: var(--amber);
+}
+
+.crew-panel {
+  list-style: none;
+  margin: 0.6rem auto 1rem;
+  padding: 0;
+  max-width: 640px;
+  display: grid;
+  gap: 0.45rem;
+}
+.crew-row {
+  display: grid;
+  grid-template-columns: 8rem 1fr 7.5rem;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.crew-row.me {
+  color: var(--gold);
+}
+.crew-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crew-track {
+  position: relative;
+  height: 2px;
+  background: rgba(255, 208, 138, 0.18);
+}
+.crew-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--amber);
+  box-shadow: 0 0 8px rgba(255, 154, 60, 0.6);
+  transition: width 0.15s linear;
+}
+.crew-meta {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.round .status-line {
+  text-align: center;
+}
+.round .crew-panel {
+  transition: opacity 1.2s ease;
+}
+.round.is-finished .crew-panel {
+  opacity: 0;
+}
+
+/* ---------- countdown ---------- */
+.countdown {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(3, 3, 5, 0.5),
+    rgba(3, 3, 5, 0.85)
+  );
+  pointer-events: none;
+}
+.countdown-num {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: min(38vw, 26rem);
+  line-height: 1;
+  color: var(--gold);
+  text-shadow:
+    0 0 60px rgba(255, 154, 60, 0.75),
+    0 0 140px rgba(196, 80, 27, 0.6);
+  animation: countdown-pop 1s ease-out both;
+}
+.countdown-num.go {
+  color: var(--cream);
+  letter-spacing: 0.08em;
+}
+.countdown-sub {
+  margin: 0;
+  font-family: var(--label);
+  font-size: 0.9rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+@keyframes countdown-pop {
+  0% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  18% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* ---------- crew results ---------- */
+.crew-result h2 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1;
+}
+.standings {
+  list-style: none;
+  margin: 1.2rem 0;
+  padding: 0;
+}
+.standing {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(255, 170, 90, 0.12);
+  color: var(--muted);
+}
+.standing.me {
+  color: var(--cream);
+}
+.standing-rank {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--muted);
+}
+.standing:first-child .standing-rank {
+  color: var(--gold);
+  text-shadow: 0 0 14px rgba(255, 154, 60, 0.6);
+}
+.standing-stat {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .countdown-num {
+    animation: none;
+  }
+}

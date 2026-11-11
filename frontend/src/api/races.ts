@@ -56,3 +56,10 @@ export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
   const { data } = await api.get<Paginated<LeaderboardEntry>>("/leaderboard/");
   return data.results;
 }
+
+export async function joinRace(roomCode: string): Promise<Race> {
+  const { data } = await api.post<Race>("/races/join/", {
+    room_code: roomCode,
+  });
+  return data;
+}

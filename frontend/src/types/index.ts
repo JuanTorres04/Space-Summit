@@ -96,3 +96,19 @@ export interface ApiErrorBody {
   detail?: string;
   [field: string]: string | string[] | undefined;
 }
+
+export type ClientMessage =
+  | { type: "start" }
+  | { type: "progress"; position: number };
+
+export type ServerMessage =
+  | { type: "state"; status: RaceStatus; host: string; players: string[] }
+  | { type: "started" }
+  | { type: "progress"; username: string; progress: number }
+  | {
+      type: "finished";
+      username: string;
+      wpm: number;
+      accuracy: number;
+      position: number;
+    };

@@ -1,3 +1,8 @@
+import logging
+logger = logging.getLogger(__name__)
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.db import transaction
 from django.utils import timezone
 from accounts.models import Profile
@@ -48,7 +53,11 @@ class PassageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # joins the track and then loads all tags in one query
-        qs = Passage.objects.select_related("track").prefetch_related("tags")
+        qs = (
+            Passage.objects.select_related("track")
+            .prefetch_related("tags")
+            .order_by("id")
+        )
         track = self.request.query_params.get("track")
         tag = self.request.query_params.get("tag")
         if track:
@@ -155,7 +164,19 @@ class RaceViewSet(
                 race.status = Race.Status.FINISHED
                 race.finished_at = now
                 race.save()
-
+        try:
+            async_to_sync(get_channel_layer().group_send)(
+                f"race_{race.room_code}",
+                {
+                    "type": "race.finished",
+                    "username": request.user.username,
+                    "wpm": scores["wpm"],
+                    "accuracy": scores["accuracy"],
+                    "position": participant.finish_position,
+                },
+            )
+        except Exception:  # a broadcast problem must never fail a scored result
+            logger.warning("Could not broadcast race result", exc_info=True)
         return Response(
             {**scores, "finish_position": participant.finish_position},
             status=200,

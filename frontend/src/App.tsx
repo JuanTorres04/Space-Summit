@@ -8,6 +8,7 @@ import { HomePage } from "./pages/HomePage";
 import { LeaderboardPage } from "./pages/LeaderboardPage";
 import { RacePage } from "./pages/RacePage";
 import { useAuthStore } from "./store/authStore";
+import { LobbyPage } from "./pages/LobbyPage";
 
 function RequireAuth({ children }: { children: ReactElement }) {
   const status = useAuthStore((state) => state.status);
@@ -47,6 +48,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <RacePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/crew/:raceId"
+            element={
+              <RequireAuth>
+                <LobbyPage />
               </RequireAuth>
             }
           />

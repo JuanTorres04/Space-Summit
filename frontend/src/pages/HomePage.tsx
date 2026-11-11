@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../api/client";
-import { createRace, fetchPassagesForTrack, fetchTracks } from "../api/races";
+import {
+  createRace,
+  fetchPassagesForTrack,
+  fetchTracks,
+  joinRace,
+} from "../api/races";
 import { TrackCard } from "../components/TrackCard";
 import { useAuthStore } from "../store/authStore";
 import type { Track } from "../types";
@@ -15,6 +20,11 @@ export function HomePage() {
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [crewTrackId, setCrewTrackId] = useState<number | null>(null);
+  const [joinCode, setJoinCode] = useState("");
+
+  const crewTrack: Track | undefined =
+    tracks.find((t) => t.id === crewTrackId) ?? tracks[0];
 
   useEffect(() => {
     let cancelled = false;
@@ -33,7 +43,7 @@ export function HomePage() {
     };
   }, []);
 
-  const handleStart = async (track: Track) => {
+  const handleStart = async (track: Track, crew = false) => {
     setStarting(true);
     setError(null);
     try {
@@ -50,7 +60,25 @@ export function HomePage() {
       const passage = pool[Math.floor(Math.random() * pool.length)];
       sessionStorage.setItem("lastPassageId", String(passage.id));
       const race = await createRace(track.id, passage.id);
-      navigate(`/race/${race.id}`);
+      navigate(crew ? `/crew/${race.id}` : `/race/${race.id}`);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setStarting(false);
+    }
+  };
+
+  const handleJoin = async () => {
+    const code = joinCode.trim().toUpperCase();
+    if (code.length !== 6) {
+      setError("Room codes have 6 characters.");
+      return;
+    }
+    setStarting(true);
+    setError(null);
+    try {
+      const race = await joinRace(code);
+      navigate(`/crew/${race.id}`);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -113,6 +141,43 @@ export function HomePage() {
           />
         ))}
       </div>
+
+      <h2 className="section-title crew-title">Crew race</h2>
+      <section className="board crew-section" aria-label="Crew race">
+        <div className="crew-block">
+          <span className="stat-label">Host a race</span>
+          <select
+            aria-label="Trail for the crew race"
+            value={crewTrack ? crewTrack.id : ""}
+            onChange={(e) => setCrewTrackId(Number(e.target.value))}
+          >
+            {tracks.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+          <button
+            disabled={starting || !crewTrack}
+            onClick={() => crewTrack && void handleStart(crewTrack, true)}
+          >
+            Host crew race
+          </button>
+        </div>
+        <div className="crew-block">
+          <span className="stat-label">Join a race</span>
+          <input
+            aria-label="Room code"
+            maxLength={6}
+            placeholder="ROOM CODE"
+            value={joinCode}
+            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+          />
+          <button disabled={starting} onClick={() => void handleJoin()}>
+            Join
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
